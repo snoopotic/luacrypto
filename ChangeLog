@@ -1,3 +1,5 @@
+0.5.1 [4/Mar/2017]
+    Repair some lua methons on the openssl-1.1.0 compatibility
 0.5.0 [1/Mar/2017]
     Update to openssl-1.1.0, Not compatible with openssl-1.0.x
 0.3.2 [25/Apr/2013]

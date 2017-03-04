@@ -6,6 +6,11 @@ LuaCrypto also supports encryption and decryption, signing and verifying, sealin
 
 Please see docs at doc/us/index.html or http://mkottman.github.io/luacrypto/.
 
+
+LuaCrypto 0.5.1
+===============
+* Repair some lua methons on the openssl-1.1.0 compatibility.
+
 LuaCrypto 0.5.0
 ===============
 * Update to openssl-1.1.0, Not compatible with openssl-1.0.x

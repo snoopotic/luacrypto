@@ -666,7 +666,7 @@ static int hmac_clone(lua_State *L)
     hmac_ctx_wrap_t *w = (hmac_ctx_wrap_t *)luaL_checkudata(L, 1, LUACRYPTO_HMACNAME);
     HMAC_CTX *c = w->ctx;
     HMAC_CTX *d = hmac_pnew(L);
-    *d = *c;
+    HMAC_CTX_copy(d, c);
     return 1;
 }
 
@@ -1052,7 +1052,7 @@ static int rand_bytes(lua_State *L)
 
 static int rand_pseudo_bytes(lua_State *L)
 {
-    return rand_do_bytes(L, RAND_pseudo_bytes);
+    return rand_do_bytes(L, RAND_bytes);
 }
 
 static int rand_add(lua_State *L)
@@ -1155,7 +1155,7 @@ static int pkey_generate(lua_State *L)
 
     if (idx == 0)
     {
-        BN_GENCB cb;
+        BN_GENCB* cb = BN_GENCB_new();
         int i;
         int success = 0;
         int e_len = sizeof(RSA_F4) * 8;
@@ -1173,8 +1173,8 @@ static int pkey_generate(lua_State *L)
 
             if (i == e_len)
             {
-                BN_GENCB_set_old(&cb, NULL, NULL);
-                success = RSA_generate_key_ex(rsa, key_len, e, &cb);
+                BN_GENCB_set_old(cb, NULL, NULL);
+                success = RSA_generate_key_ex(rsa, key_len, e, cb);
             }
         }
 
@@ -1182,32 +1182,36 @@ static int pkey_generate(lua_State *L)
         if (!success || (*pkey = EVP_PKEY_new()) == NULL)
         {
             if (rsa) RSA_free(rsa);
+            if (cb) BN_GENCB_free(cb);
             return crypto_error(L);
         }
 
         EVP_PKEY_assign_RSA(*pkey, rsa);
+        if (cb) BN_GENCB_free(cb);
         return 1;
     }
     else
     {
-        BN_GENCB cb;
+        BN_GENCB* cb = BN_GENCB_new();
         int success = 0;
         DSA *dsa = DSA_new();
 
         if (dsa)
         {
-            BN_GENCB_set_old(&cb, NULL, NULL);
-            if (DSA_generate_parameters_ex(dsa, key_len, NULL, 0, NULL, NULL, &cb))
+            BN_GENCB_set_old(cb, NULL, NULL);
+            if (DSA_generate_parameters_ex(dsa, key_len, NULL, 0, NULL, NULL, cb))
                 success = DSA_generate_key(dsa);
         }
 
         if (!success || (*pkey = EVP_PKEY_new()) == NULL)
         {
             if (dsa) DSA_free(dsa);
+            if (cb) BN_GENCB_free(cb);
             return crypto_error(L);
         }
 
         EVP_PKEY_assign_DSA(*pkey, dsa);
+        if (cb) BN_GENCB_free(cb);
         return 1;
     }
 }
