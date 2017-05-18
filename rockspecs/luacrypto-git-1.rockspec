@@ -11,7 +11,7 @@ dependencies = {
 	"lua >= 5.1",
 }
 source = {
-	url = [[git://github.com/mkottman/luacrypto.git]],
+	url = [[git://github.com/evanlabs/luacrypto.git]],
 	dir = "luacrypto"
 }
 build = {
@@ -22,7 +22,7 @@ build = {
 			install_command = [[copy ".\Release\crypto.dll" "$(LIBDIR)\crypto.dll" /y ]]
 		},
 		unix = {
-			type = "make",
+			type = "cmake",
 			variables = {
 				INCONCERT_DEVEL = "$(INCONCERT_DEVEL)",
 				LUA_LUADIR = "$(LUADIR)",
