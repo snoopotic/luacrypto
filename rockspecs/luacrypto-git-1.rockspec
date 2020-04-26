@@ -11,7 +11,7 @@ dependencies = {
 	"lua >= 5.1",
 }
 source = {
-	url = [[git://github.com/evanlabs/luacrypto.git]],
+	url = [[git://github.com/Wassasin/luacrypto.git]],
 	dir = "luacrypto"
 }
 build = {
